@@ -9,3 +9,7 @@ build/
 .vscode/
 
 src/star_backend/_version.py
+
+# uv environment
+uv.lock
+.venv/
