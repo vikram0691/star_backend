@@ -1,0 +1,47 @@
+[build-system]
+requires = [
+    "setuptools>=64.0.0", 
+    "setuptools_scm[toml]>=8.0.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "star_backend"
+dynamic = ["version"]
+description = "Backend services for the star forecastings engine."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+authors = [
+    { name = "Dr Vikram Singh", email = "vsingh@icgeb.res.in" }
+]
+maintainers = [
+    { name = "Dr Vikram Singh", email = "vikram.singh7571@gmail.com" }
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+]
+
+dependencies = [
+]
+
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+version_file = "src/star_backend/_version.py"
+tag_regex = "^(?P<prefix>v)?(?P<version>\\d+\\.\\d+\\.\\d+.*)$"
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"

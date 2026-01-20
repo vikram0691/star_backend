@@ -1,0 +1,11 @@
+# Python ignores
+__pycache__/
+*.py[cod]
+.env
+dist/
+build/
+*.egg-info/
+.ipynb_checkpoints/
+.vscode/
+
+src/star_backend/_version.py
