@@ -50,3 +50,8 @@ version_file = "src/star_backend/_version.py"
 tag_regex = "^(?P<prefix>v)?(?P<version>\\d+\\.\\d+\\.\\d+.*)$"
 version_scheme = "guess-next-dev"
 local_scheme = "node-and-date"
+
+[dependency-groups]
+dev = [
+    "setuptools-scm>=9.2.2",
+]
