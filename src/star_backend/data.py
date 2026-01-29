@@ -337,3 +337,40 @@ def load_weather(path: Path, *, sheet_name: Union[str, int, None] = 0) -> pd.Dat
     df = _drop_bogus_rows(df, "Weather")
 
     return df
+
+def impute_weather(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Impute missing daily weather data in a causality-safe manner.
+
+    Principles:
+    - Rainfall is episodic → missing implies 0 (dry)
+    - Continuous variables → forward-only interpolation (No future leakage)
+    - Explicit handling of leading NaNs (Cold start problem)
+    """
+    if df.empty or "time_stamp" not in df.columns:
+        return df
+
+    df = df.sort_values("time_stamp").set_index("time_stamp")
+
+    rain_cols = []
+    if "rain_fall" in df.columns:
+        rain_cols.append("rain_fall")
+    if "rainfall" in df.columns:
+        rain_cols.append("rainfall")
+
+    for col in rain_cols:
+        df[col] = df[col].fillna(0)
+
+    continuous_cols = [c for c in df.columns if c not in rain_cols]
+    if continuous_cols:
+        df[continuous_cols] = df[continuous_cols].interpolate(
+            method="time", limit_direction="forward"
+        )
+
+    for col in continuous_cols:
+        if len(df) > 0 and pd.isna(df[col].iloc[0]):
+            first_valid = df[col].first_valid_index()
+            if first_valid is not None:
+                df.loc[:first_valid, col] = df.loc[first_valid, col]
+
+    return df.reset_index()
