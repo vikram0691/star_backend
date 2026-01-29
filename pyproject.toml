@@ -36,6 +36,9 @@ dependencies = [
     "structlog>=24.1.0",         # Production logging
 ]
 
+[project.scripts]
+star-backend = "star_backend.cli:app"
+
 [project.optional-dependencies]
 dev = ["pytest", "ruff", "mypy"]
 
@@ -52,6 +55,4 @@ version_scheme = "guess-next-dev"
 local_scheme = "node-and-date"
 
 [dependency-groups]
-dev = [
-    "setuptools-scm>=9.2.2",
-]
+dev = ["setuptools-scm>=9.2.2"]
