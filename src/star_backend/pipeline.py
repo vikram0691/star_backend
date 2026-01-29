@@ -1,7 +1,7 @@
 import structlog
 import json
 from pathlib import Path
-from star_backend.data import load_excel
+from star_backend.data import load_clinical, load_weather
 from typing import Dict, Any
 
 
@@ -15,9 +15,11 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
 
     logger.info("Loading clinical and weather data...")
 
-    clinical_data = load_excel(clinical_path)
-    weather_data = load_excel(weather_path)
+    clinical_data = load_clinical(clinical_path)
+    weather_data = load_weather(weather_path)
 
+    print(clinical_data.dtypes)
+    print(weather_data.dtypes)
 
     # 2. Build the Result Dictionary
     result = {
@@ -46,7 +48,7 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
     with open(output_file, "w") as f:
         json.dump(result, f, indent=2, default=str)
         
-    logger.info(f"✅ Results saved to: {output_file}")
+    logger.info(f" Results saved to: {output_file}")
     
     # 4. Return it (optional, but good for confirmation)
     return result
