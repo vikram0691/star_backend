@@ -181,6 +181,61 @@ def safe_infer_and_coerce_column(
     if ptypes.is_object_dtype(df[col]) or ptypes.is_string_dtype(df[col]):
         df[col] = df[col].replace(r"^\s*$", np.nan, regex=True)
 
+def _ensure_timestamp_column(df: pd.DataFrame, file_label: str) -> pd.DataFrame:
+    """Identify and rename the primary timestamp column."""
+    if "time_stamp" in df.columns:
+        return df
+
+    datetime_cols = df.select_dtypes(include=["datetime", "datetimetz"]).columns
+    if len(datetime_cols) > 0:
+        logger.info(
+            f"[{file_label}] Using inferred column '{datetime_cols[0]}' as 'time_stamp'"
+        )
+        return df.rename(columns={datetime_cols[0]: "time_stamp"})
+
+    candidates = [c for c in df.columns if "date" in c.lower() or "time" in c.lower()]
+    if candidates:
+        target = candidates[0]
+        logger.warning(
+            f"[{file_label}] No datetime type found. Forcing parse on '{target}'"
+        )
+        df = df.rename(columns={target: "time_stamp"})
+        df["time_stamp"] = pd.to_datetime(df["time_stamp"], errors="coerce")
+        return df
+
+    raise DataValidationError(
+        f"[{file_label}] Critical: No 'time_stamp' or valid date column found."
+    )
+
+def _drop_bogus_rows(df: pd.DataFrame, context: str) -> pd.DataFrame:
+    """
+    STRICT LOGIC:
+    Drops rows ONLY if 'time_stamp' is valid BUT ALL other columns are effectively empty.
+    If even ONE other column has data (name, phone, etc.), the row is kept.
+    """
+    # Identify columns that are NOT the timestamp
+    data_cols = [c for c in df.columns if c != "time_stamp"]
+
+    if not data_cols:
+        return df
+
+    # Create a temporary subset to check for emptiness
+    subset = df[data_cols].copy()
+
+    for col in subset.select_dtypes(include=["object", "string"]):
+        subset[col] = subset[col].replace(r"^\s*$", np.nan, regex=True)
+
+    mask_all_empty = subset.isna().all(axis=1)
+
+    if mask_all_empty.any():
+        drop_count = mask_all_empty.sum()
+        df = df[~mask_all_empty]
+        logger.warning(
+            f"[{context}] Dropped {drop_count} rows (Valid Date but NO other data)."
+        )
+
+    return df
+
 def _load_and_preprocess_excel(file_path: Path, sheet_name: Union[str, int, List[Union[str, int]], None] = 0) -> pd.DataFrame:
     """
     Load data from an Excel file into a pandas DataFrame.

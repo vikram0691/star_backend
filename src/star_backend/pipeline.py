@@ -18,6 +18,9 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
     clinical_data = load_clinical(clinical_path)
     weather_data = load_weather(weather_path)
 
+    print(clinical_data.head(5))
+    print(weather_data.head(5))
+
     # 2. Build the Result Dictionary
     result = {
         "status": "success",
