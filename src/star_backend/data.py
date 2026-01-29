@@ -56,6 +56,15 @@ MONTH_CORRECTIONS = _build_month_map()
 
 VALID_MONTH_KEYS = list(MONTH_CORRECTIONS.keys())
 
+VALID_TEHSILS = [
+    "SADAR",
+    "NAINA DEVI",
+    "JHANDUTTA",
+    "GHUMARWIN"
+]
+
+DEFAULT_TEHSIL = "SADAR"
+
 def looks_date_like(series: pd.Series) -> bool:
     """Heuristic check if a column contains date-like strings."""
     non_null = series.dropna().astype(str)
@@ -152,7 +161,6 @@ def safe_infer_and_coerce_column(
     num = pd.to_numeric(series, errors="coerce")
     if num.notna().sum() >= max(1, int(n_nonnull * threshold)):
         df[col] = num
-        print(col, df[col].head(5))
         return
 
     if looks_date_like(series):
@@ -295,8 +303,31 @@ def _load_and_preprocess_excel(file_path: Path, sheet_name: Union[str, int, List
 
 def load_clinical(path: Path, *, sheet_name: Union[str, int, None] = 0) -> pd.DataFrame:
     """Loads Clinical Data."""
-    # 1. Generic Load
     df = _load_and_preprocess_excel(path, sheet_name)
+    df = _ensure_timestamp_column(df, "Clinical")
+    df = _drop_bogus_rows(df, "Clinical")
+
+    if "name" in df.columns:
+        pre_len = len(df)
+        df = df[df["name"] != "0"]
+        dropped = pre_len - len(df)
+        if dropped > 0:
+            logger.info(f"[Clinical] Dropped {dropped} rows where name='0'")
+
+    if "tehsil" in df.columns:
+        # Now safe to convert, because we know these rows have actual data
+        df["tehsil"] = df["tehsil"].astype(str).str.strip().str.upper()
+
+        # Map invalid tehsils
+        mask_invalid = ~df["tehsil"].isin(VALID_TEHSILS)
+        if mask_invalid.any():
+            count = mask_invalid.sum()
+            logger.info(f"Mapping {count} invalid Tehsil entries to 'SADAR'.")
+            df.loc[mask_invalid, "tehsil"] = DEFAULT_TEHSIL
+
+    if "phone_no" in df.columns:
+        df["phone_no"] = df["phone_no"].astype("string")
+
     return df
 
 def load_weather(path: Path, *, sheet_name: Union[str, int, None] = 0) -> pd.DataFrame:

@@ -5,7 +5,7 @@
     "weather_file": "data/raw/ST_WEATHER.xlsx"
   },
   "clinical_summary": {
-    "rows": 1144,
+    "rows": 1140,
     "preview": [
       {
         "time_stamp": "2019-01-01 00:00:00",
@@ -14,7 +14,7 @@
         "gender": "M",
         "elisa_value": null,
         "tehsil": "JHANDUTTA",
-        "phone_no": 9418398206
+        "phone_no": "9418398206"
       },
       {
         "time_stamp": "2019-01-01 00:00:00",
@@ -23,7 +23,7 @@
         "gender": "M",
         "elisa_value": 0.5,
         "tehsil": "GHUMARWIN",
-        "phone_no": 9817544223
+        "phone_no": "9817544223"
       },
       {
         "time_stamp": "2019-01-01 00:00:00",
@@ -32,7 +32,7 @@
         "gender": "M",
         "elisa_value": 0.4,
         "tehsil": "SADAR",
-        "phone_no": 9418323208
+        "phone_no": "9418323208"
       },
       {
         "time_stamp": "2019-01-01 00:00:00",
@@ -41,7 +41,7 @@
         "gender": "M",
         "elisa_value": 1.0,
         "tehsil": "JHANDUTTA",
-        "phone_no": 9816164024
+        "phone_no": "9816164024"
       },
       {
         "time_stamp": "2019-01-01 00:00:00",
@@ -49,8 +49,8 @@
         "age": 45.0,
         "gender": "F",
         "elisa_value": 0.7,
-        "tehsil": "BILASPUR",
-        "phone_no": 7807675562
+        "tehsil": "SADAR",
+        "phone_no": "7807675562"
       }
     ]
   },
