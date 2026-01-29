@@ -34,7 +34,7 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
             "preview": weather_data.head(5).to_dict(orient="records")
         }
     }
-    
+
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Define the output file path

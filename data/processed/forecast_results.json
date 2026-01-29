@@ -8,49 +8,49 @@
     "rows": 1144,
     "preview": [
       {
-        "time_stamp": "NaT",
+        "time_stamp": "2019-01-01 00:00:00",
         "name": "Sachin",
         "age": 19.0,
         "gender": "M",
-        "elisa_value": NaN,
+        "elisa_value": null,
         "tehsil": "JHANDUTTA",
-        "phone_no": 9418398206.0
+        "phone_no": 9418398206
       },
       {
-        "time_stamp": "NaT",
+        "time_stamp": "2019-01-01 00:00:00",
         "name": "Sahil",
         "age": 16.0,
         "gender": "M",
         "elisa_value": 0.5,
         "tehsil": "GHUMARWIN",
-        "phone_no": 9817544223.0
+        "phone_no": 9817544223
       },
       {
-        "time_stamp": "NaT",
+        "time_stamp": "2019-01-01 00:00:00",
         "name": "Rohit",
         "age": 14.0,
         "gender": "M",
         "elisa_value": 0.4,
         "tehsil": "SADAR",
-        "phone_no": 9418323208.0
+        "phone_no": 9418323208
       },
       {
-        "time_stamp": "NaT",
+        "time_stamp": "2019-01-01 00:00:00",
         "name": "Prem singh",
         "age": 65.0,
         "gender": "M",
         "elisa_value": 1.0,
         "tehsil": "JHANDUTTA",
-        "phone_no": 9816164024.0
+        "phone_no": 9816164024
       },
       {
-        "time_stamp": "NaT",
+        "time_stamp": "2019-01-01 00:00:00",
         "name": "Jamuna",
         "age": 45.0,
         "gender": "F",
         "elisa_value": 0.7,
         "tehsil": "BILASPUR",
-        "phone_no": 7807675562.0
+        "phone_no": 7807675562
       }
     ]
   },
@@ -64,7 +64,7 @@
         "rain_fall": 0.0,
         "evaporation": 2.8,
         "maximum_humidity": 60,
-        "minimum_humidity": 42.0,
+        "minimum_humidity": 42,
         "wind_speed_kmph": 6.6,
         "soil_min_temp": 6.0,
         "soil_max_temp": 13.0
@@ -76,7 +76,7 @@
         "rain_fall": 0.0,
         "evaporation": 2.2,
         "maximum_humidity": 74,
-        "minimum_humidity": 51.0,
+        "minimum_humidity": 51,
         "wind_speed_kmph": 4.5,
         "soil_min_temp": 8.0,
         "soil_max_temp": 10.5
@@ -88,7 +88,7 @@
         "rain_fall": 0.0,
         "evaporation": 2.0,
         "maximum_humidity": 47,
-        "minimum_humidity": 41.0,
+        "minimum_humidity": 41,
         "wind_speed_kmph": 6.3,
         "soil_min_temp": 5.0,
         "soil_max_temp": 13.5
@@ -100,7 +100,7 @@
         "rain_fall": 0.0,
         "evaporation": 2.0,
         "maximum_humidity": 48,
-        "minimum_humidity": 45.0,
+        "minimum_humidity": 45,
         "wind_speed_kmph": 6.5,
         "soil_min_temp": 5.0,
         "soil_max_temp": 10.5
@@ -112,7 +112,7 @@
         "rain_fall": 0.0,
         "evaporation": 2.0,
         "maximum_humidity": 52,
-        "minimum_humidity": 94.0,
+        "minimum_humidity": 94,
         "wind_speed_kmph": 4.3,
         "soil_min_temp": 7.5,
         "soil_max_temp": 8.5

@@ -111,6 +111,34 @@ def fix_month_spelling(series: pd.Series, cutoff: float = 0.78) -> pd.Series:
     mapping = {val: fix_month_spelling_in_string(val, cutoff) for val in unique_vals}
     return series.astype(str).map(mapping).where(series.notna())
 
+def detect_common_date_format(
+    sample_values: Iterable[str],
+    formats: Iterable[str] = COMMON_DATE_FORMATS, # Uses the local list defined above
+    threshold: float = DATE_FORMAT_DETECTION_THRESHOLD,
+) -> Optional[str]:
+    """
+    Detects the date format using vectorized Pandas operations.
+    
+    WARNING:
+        - Order Matters: The first format in `formats` that exceeds the threshold wins.
+        - Ambiguity: Since we prioritize Day-First formats (e.g. %d/%m/%Y), 
+          ambiguous dates like 01/02/2023 will be parsed as DD/MM/YYYY.
+    """
+    series = pd.Series(list(sample_values)).dropna().astype(str)
+    
+    if series.empty:
+        return None
+
+    for fmt in formats:
+        converted = pd.to_datetime(series, format=fmt, errors="coerce")
+        
+        success_rate = converted.notna().mean()
+        
+        if success_rate >= threshold:
+            return fmt
+            
+    return None
+
 def safe_infer_and_coerce_column(
     df: pd.DataFrame, col: str, threshold: float = CONVERSION_FRACTION_THRESHOLD
 ) -> None:
@@ -130,18 +158,28 @@ def safe_infer_and_coerce_column(
     if looks_date_like(series):
         sample_raw = series.dropna().astype(str).head(DATE_LIKE_SAMPLE)
         sample_fixed = sample_raw.map(fix_month_spelling_in_string)
+        detected_fmt = detect_common_date_format(sample_fixed)
+
         corrected_series = fix_month_spelling(series)
 
-        dt = pd.to_datetime(
-            corrected_series, format="%m-%Y", errors="coerce", dayfirst=False
-        )
-        
-        df[col] = dt
-        print(col, df[col].head(5))
-        return
+        if detected_fmt:
+            dt = pd.to_datetime(
+                corrected_series, format=detected_fmt, errors="coerce", dayfirst=False
+            )
+        else:
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", message="Could not infer format")
+                dt = pd.to_datetime(corrected_series, errors="coerce", dayfirst=True)
 
-    print(col, df[col].head(5))
-    return
+        if dt.notna().sum() >= max(1, int(n_nonnull * threshold)):
+            logger.info(
+                f"Inferred datetime: '{col}' (Format: {detected_fmt if detected_fmt else 'Auto'})"
+            )
+            df[col] = dt
+            return
+
+    if ptypes.is_object_dtype(df[col]) or ptypes.is_string_dtype(df[col]):
+        df[col] = df[col].replace(r"^\s*$", np.nan, regex=True)
 
 def _load_and_preprocess_excel(file_path: Path, sheet_name: Union[str, int, List[Union[str, int]], None] = 0) -> pd.DataFrame:
     """
@@ -195,7 +233,7 @@ def _load_and_preprocess_excel(file_path: Path, sheet_name: Union[str, int, List
                 continue
             safe_infer_and_coerce_column(df, col)
 
-        return df
+        return df.convert_dtypes()
     except Exception as e:
         logger.exception(f"Error reading Excel file for '{file_path}'")
         raise DataValidationError(f"Failed to load Excel file: {file_path}") from e
