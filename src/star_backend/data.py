@@ -332,6 +332,8 @@ def load_clinical(path: Path, *, sheet_name: Union[str, int, None] = 0) -> pd.Da
 
 def load_weather(path: Path, *, sheet_name: Union[str, int, None] = 0) -> pd.DataFrame:
     """Loads Weather Data."""
-    # 1. Generic Load
     df = _load_and_preprocess_excel(path, sheet_name)
+    df = _ensure_timestamp_column(df, "Weather")
+    df = _drop_bogus_rows(df, "Weather")
+
     return df
