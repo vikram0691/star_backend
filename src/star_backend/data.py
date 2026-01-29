@@ -65,6 +65,23 @@ VALID_TEHSILS = [
 
 DEFAULT_TEHSIL = "SADAR"
 
+# Columns to average (Continuous variables)
+WEATHER_COLS_MEAN = [
+    "atm_max_temp",
+    "atm_min_temp",
+    "soil_max_temp",
+    "soil_min_temp",
+    "maximum_humidity",
+    "minimum_humidity",
+    "wind_speed_kmph",
+]
+
+# Columns to sum (Accumulative variables)
+WEATHER_COLS_SUM = [
+    "rain_fall",
+    "evaporation"
+]
+
 def looks_date_like(series: pd.Series) -> bool:
     """Heuristic check if a column contains date-like strings."""
     non_null = series.dropna().astype(str)
@@ -374,3 +391,78 @@ def impute_weather(df: pd.DataFrame) -> pd.DataFrame:
                 df.loc[:first_valid, col] = df.loc[first_valid, col]
 
     return df.reset_index()
+
+def aggregate_cases(df_clinical: pd.DataFrame) -> pd.DataFrame:
+    """
+    Aggregates individual case rows -> Monthly counts.
+    Assumes `time_stamp` is ALREADY a datetime column.
+    """
+    if df_clinical.empty:
+        return pd.DataFrame(columns=["time_stamp", "case_count"])
+
+    df = df_clinical.set_index("time_stamp")
+
+    monthly = df.resample("MS").size().rename("case_count")
+
+    if not monthly.empty:
+        full_idx = pd.date_range(
+            start=monthly.index.min(),
+            end=monthly.index.max(),
+            freq="MS",
+        )
+        monthly = monthly.reindex(full_idx, fill_value=0)
+
+    return monthly.reset_index().rename(columns={"index": "time_stamp"})
+
+
+def aggregate_weather(df_weather: pd.DataFrame, frequency: str = "MS") -> pd.DataFrame:
+    """
+    Aggregates Daily weather -> Statistics based on the provided frequency.
+
+    Parameters:
+    ----------
+    df_weather : pd.DataFrame
+        Input dataframe containing a "time_stamp" column and weather metrics.
+
+    frequency : str, optional (default="MS")
+        The frequency level to aggregate the data. Common values include:
+
+        - 'D'      : Daily
+        - 'W'      : Weekly (End of week: Sunday)
+        - 'W-MON'  : Weekly (End of week: Monday)
+        - 'MS'     : Month Start (e.g., 2023-01-01) - *Recommended for Monthly*
+        - 'M'      : Month End (e.g., 2023-01-31)
+        - 'QS'     : Quarter Start
+        - 'YS'     : Year Start
+
+    Returns:
+    -------
+    pd.DataFrame
+        Aggregated weather statistics (Sums for rainfall etc., Means for temp etc.)
+    """
+    if df_weather.empty:
+        return pd.DataFrame()
+
+    df = df_weather.copy()
+
+    # Ensure time_stamp is valid datetime before indexing
+    if not pd.api.types.is_datetime64_any_dtype(df["time_stamp"]):
+        df["time_stamp"] = pd.to_datetime(df["time_stamp"])
+
+    df = df.set_index("time_stamp")
+
+    # Dynamic Aggregation Dictionary Construction
+    agg_dict = {}
+    for col in df.columns:
+        if col in WEATHER_COLS_SUM:
+            agg_dict[col] = "sum"
+        elif col in WEATHER_COLS_MEAN:
+            agg_dict[col] = "mean"
+        else:
+            # Default fallback
+            agg_dict[col] = "mean"
+
+    aggregated = df.resample(frequency).agg(agg_dict, min_count=1)
+    
+    aggregated = aggregated.asfreq(frequency)
+    return aggregated.reset_index()

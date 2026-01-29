@@ -1,7 +1,7 @@
 import structlog
 import json
 from pathlib import Path
-from star_backend.data import load_clinical, load_weather
+from star_backend.data import load_clinical, load_weather, impute_weather
 from typing import Dict, Any
 
 
@@ -18,9 +18,11 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
     clinical_data = load_clinical(clinical_path)
     weather_data = load_weather(weather_path)
 
-    print(clinical_data.dtypes)
-    print(weather_data.dtypes)
+    df_weather_impute = impute_weather(weather_data)
 
+    print(df_weather_impute.head(5))
+    print(df_weather_impute.dtypes)
+    
     # 2. Build the Result Dictionary
     result = {
         "status": "success",
