@@ -8,47 +8,47 @@
     "rows": 1144,
     "preview": [
       {
-        "time_stamp": "Janurary 2019",
+        "time_stamp": "NaT",
         "name": "Sachin",
-        "age": "19",
+        "age": 19.0,
         "gender": "M",
-        "elisa_value": "Igm+",
+        "elisa_value": NaN,
         "tehsil": "JHANDUTTA",
         "phone_no": 9418398206.0
       },
       {
-        "time_stamp": "Janurary 2019",
+        "time_stamp": "NaT",
         "name": "Sahil",
-        "age": "16",
+        "age": 16.0,
         "gender": "M",
-        "elisa_value": "0.5",
+        "elisa_value": 0.5,
         "tehsil": "GHUMARWIN",
         "phone_no": 9817544223.0
       },
       {
-        "time_stamp": "January 2019",
+        "time_stamp": "NaT",
         "name": "Rohit",
-        "age": "14",
+        "age": 14.0,
         "gender": "M",
-        "elisa_value": "0.4",
+        "elisa_value": 0.4,
         "tehsil": "SADAR",
         "phone_no": 9418323208.0
       },
       {
-        "time_stamp": "January 2019",
+        "time_stamp": "NaT",
         "name": "Prem singh",
-        "age": "65",
+        "age": 65.0,
         "gender": "M",
-        "elisa_value": "1",
+        "elisa_value": 1.0,
         "tehsil": "JHANDUTTA",
         "phone_no": 9816164024.0
       },
       {
-        "time_stamp": "January 2019",
+        "time_stamp": "NaT",
         "name": "Jamuna",
-        "age": "45",
+        "age": 45.0,
         "gender": "F",
-        "elisa_value": "0.7",
+        "elisa_value": 0.7,
         "tehsil": "BILASPUR",
         "phone_no": 7807675562.0
       }
@@ -61,61 +61,61 @@
         "time_stamp": "2019-01-01 00:00:00",
         "atm_max_temp": 19.0,
         "atm_min_temp": 4.0,
-        "rain_fall": "0",
+        "rain_fall": 0.0,
         "evaporation": 2.8,
         "maximum_humidity": 60,
-        "minimum_humidity": "42",
+        "minimum_humidity": 42.0,
         "wind_speed_kmph": 6.6,
-        "soil_min_temp": "6",
-        "soil_max_temp": "13"
+        "soil_min_temp": 6.0,
+        "soil_max_temp": 13.0
       },
       {
         "time_stamp": "2019-01-02 00:00:00",
         "atm_max_temp": 17.0,
         "atm_min_temp": 6.0,
-        "rain_fall": "0",
+        "rain_fall": 0.0,
         "evaporation": 2.2,
         "maximum_humidity": 74,
-        "minimum_humidity": "51",
+        "minimum_humidity": 51.0,
         "wind_speed_kmph": 4.5,
-        "soil_min_temp": "8",
-        "soil_max_temp": "10.5"
+        "soil_min_temp": 8.0,
+        "soil_max_temp": 10.5
       },
       {
         "time_stamp": "2019-01-03 00:00:00",
         "atm_max_temp": 13.0,
         "atm_min_temp": 3.0,
-        "rain_fall": "0",
+        "rain_fall": 0.0,
         "evaporation": 2.0,
         "maximum_humidity": 47,
-        "minimum_humidity": "41",
+        "minimum_humidity": 41.0,
         "wind_speed_kmph": 6.3,
-        "soil_min_temp": "5",
-        "soil_max_temp": "13.5"
+        "soil_min_temp": 5.0,
+        "soil_max_temp": 13.5
       },
       {
         "time_stamp": "2019-01-04 00:00:00",
         "atm_max_temp": 17.5,
         "atm_min_temp": 2.5,
-        "rain_fall": "0",
+        "rain_fall": 0.0,
         "evaporation": 2.0,
         "maximum_humidity": 48,
-        "minimum_humidity": "45",
+        "minimum_humidity": 45.0,
         "wind_speed_kmph": 6.5,
-        "soil_min_temp": "5",
-        "soil_max_temp": "10.5"
+        "soil_min_temp": 5.0,
+        "soil_max_temp": 10.5
       },
       {
         "time_stamp": "2019-01-05 00:00:00",
         "atm_max_temp": 13.5,
         "atm_min_temp": 5.5,
-        "rain_fall": "0",
+        "rain_fall": 0.0,
         "evaporation": 2.0,
         "maximum_humidity": 52,
-        "minimum_humidity": "94",
+        "minimum_humidity": 94.0,
         "wind_speed_kmph": 4.3,
-        "soil_min_temp": "7.5",
-        "soil_max_temp": "8.5"
+        "soil_min_temp": 7.5,
+        "soil_max_temp": 8.5
       }
     ]
   }

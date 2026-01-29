@@ -18,9 +18,6 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
     clinical_data = load_clinical(clinical_path)
     weather_data = load_weather(weather_path)
 
-    print(clinical_data.dtypes)
-    print(weather_data.dtypes)
-
     # 2. Build the Result Dictionary
     result = {
         "status": "success",
@@ -37,9 +34,7 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
             "preview": weather_data.head(5).to_dict(orient="records")
         }
     }
-
-    # 3. SAVE TO FILE (The New Part)
-    # Ensure the output directory exists
+    
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Define the output file path
