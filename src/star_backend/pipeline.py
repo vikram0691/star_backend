@@ -1,7 +1,9 @@
 import structlog
 import json
+
+import pandas as pd
 from pathlib import Path
-from star_backend.data import load_clinical, load_weather, impute_weather
+from star_backend.data import load_clinical, load_weather, impute_weather, aggregate_cases, aggregate_weather
 from typing import Dict, Any
 
 
@@ -20,10 +22,13 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
 
     df_weather_impute = impute_weather(weather_data)
 
-    print(df_weather_impute.head(5))
-    print(df_weather_impute.dtypes)
+    m_cases = aggregate_cases(clinical_data)
+    m_weather = aggregate_weather(df_weather_impute)
+
+    df_gold = pd.merge(m_cases, m_weather, on="time_stamp", how="left")
+
+    df_gold.to_csv(output_dir / "gold_dataset.csv", index=False)
     
-    # 2. Build the Result Dictionary
     result = {
         "status": "success",
         "meta": {

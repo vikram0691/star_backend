@@ -10,6 +10,7 @@ build/
 
 src/star_backend/_version.py
 
+data/
 # uv environment
 uv.lock
 .venv/
