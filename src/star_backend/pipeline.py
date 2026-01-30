@@ -1,7 +1,9 @@
 import structlog
 import json
+
+import pandas as pd
 from pathlib import Path
-from star_backend.data import load_excel
+from star_backend.data import load_clinical, load_weather, impute_weather, aggregate_cases, aggregate_weather
 from typing import Dict, Any
 
 
@@ -15,11 +17,18 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
 
     logger.info("Loading clinical and weather data...")
 
-    clinical_data = load_excel(clinical_path)
-    weather_data = load_excel(weather_path)
+    clinical_data = load_clinical(clinical_path)
+    weather_data = load_weather(weather_path)
 
+    df_weather_impute = impute_weather(weather_data)
 
-    # 2. Build the Result Dictionary
+    m_cases = aggregate_cases(clinical_data)
+    m_weather = aggregate_weather(df_weather_impute)
+
+    df_gold = pd.merge(m_cases, m_weather, on="time_stamp", how="left")
+
+    df_gold.to_csv(output_dir / "gold_dataset.csv", index=False)
+    
     result = {
         "status": "success",
         "meta": {
@@ -36,8 +45,6 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
         }
     }
 
-    # 3. SAVE TO FILE (The New Part)
-    # Ensure the output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Define the output file path
@@ -46,7 +53,7 @@ def process_forecast(clinical_path: Path, weather_path: Path, output_dir: Path) 
     with open(output_file, "w") as f:
         json.dump(result, f, indent=2, default=str)
         
-    logger.info(f"✅ Results saved to: {output_file}")
+    logger.info(f" Results saved to: {output_file}")
     
     # 4. Return it (optional, but good for confirmation)
     return result

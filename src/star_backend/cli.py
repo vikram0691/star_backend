@@ -38,7 +38,6 @@ def run(
     try:
         result = process_forecast(clinical_file, weather_file, output_dir)
         typer.secho("Forecast processing completed successfully!", fg=typer.colors.GREEN, bold = True)
-        print(json.dumps(result, indent=4, default=str))
     except Exception as e:
         logger.error(f"Error processing forecast:", error=str(e))
         raise typer.Exit(code=1)
