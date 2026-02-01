@@ -35,6 +35,9 @@ dependencies = [
     "pydantic-settings>=2.0.0",  # Configuration management
     "structlog>=24.1.0",         # Production logging
     "rapidfuzz>=3.13.0",
+    "mlforecast>=1.0.2",
+    "statsforecast>=2.0.2",
+    "statsmodels>=0.14.6",
 ]
 
 [project.scripts]
