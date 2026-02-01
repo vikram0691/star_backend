@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Annotated, Optional
 
 from star_backend.logging_conf import configure_logging
-from star_backend.config import get_settings
+from star_backend.config import get_settings, ForecastConfig
 from star_backend.pipeline import process_forecast
 
 
@@ -49,6 +49,8 @@ def run(
     Main command that greets the user.
     """
     settings = get_settings()
+    config = ForecastConfig()
+
 
     clinical_file = clinical_file or settings.clinical_file
     weather_file = weather_file or settings.weather_file
@@ -58,7 +60,7 @@ def run(
         output_dir = settings.output_dir
 
     try:
-        result = process_forecast(clinical_file, weather_file, output_dir)
+        result = process_forecast(clinical_file, weather_file, output_dir, config)
         typer.secho("Forecast processing completed successfully!", fg=typer.colors.GREEN, bold = True)
     except Exception as e:
         logger.error(f"Error processing forecast:", error=str(e))

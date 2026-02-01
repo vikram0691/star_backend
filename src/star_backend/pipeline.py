@@ -92,10 +92,47 @@ def build_gold_dataset(
 
     return gold_df
 
+def run_training_pipeline(
+    gold_df: pd.DataFrame,
+    config,
+):
+    """
+    Trains the selected forecasting model.
+    Assumes `gold_df` has already passed validation.
+    """
+
+    logger.info(
+        "starting_training_pipeline",
+        model_type=config.model_type,
+    )
+
+    # Nixtla schema alignment
+    nixtla_df = gold_df.rename(
+        columns={
+            "time_stamp": "ds",
+            "case_count": "y",
+        }
+    )
+    nixtla_df["unique_id"] = "bilaspur_HP"
+
+    # # Engine resolution via registry
+    # engine_cls = ModelRegistry.get_model(config.model_type)
+    # engine = engine_cls(config)
+
+    # engine.fit(nixtla_df)
+
+    # logger.info("model_training_complete")
+
+    # return engine
+    return nixtla_df  # Placeholder since model training is not implemented
+
+
+
 def process_forecast(
     clinical_path: Path,    
     weather_path: Path,
-    output_dir: Path
+    output_dir: Path,
+    config,
 ) -> Dict[str, Any]:
     """
     High-level orchestration used by CLI and API.
@@ -110,7 +147,9 @@ def process_forecast(
     gold_path = output_dir / "gold_dataset.csv"
     gold_df.to_csv(gold_path, index=False)
 
-
+    engine = run_training_pipeline(gold_df, config)
+    engine.to_csv(output_dir / "nixtla_ready_dataset.csv", index=False)
+    
     logger.info(
         "forecast_pipeline_complete",
         gold_rows=len(gold_df),
@@ -120,5 +159,6 @@ def process_forecast(
     return {
         "status": "success",
         "gold_dataset": str(gold_path),
-        "rows": len(gold_df)
+        "rows": len(gold_df),
+        "model_type": config.model_type,
     }
