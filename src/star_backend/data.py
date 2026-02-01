@@ -407,11 +407,10 @@ def aggregate_cases(df_clinical: pd.DataFrame) -> pd.DataFrame:
     if not monthly.empty:
         full_idx = pd.date_range(
             start=monthly.index.min(),
-            end=monthly.index.max(),
+            end=monthly.index.max() + pd.offsets.MonthBegin(1),
             freq="MS",
         )
         monthly = monthly.reindex(full_idx, fill_value=0)
-
     return monthly.reset_index().rename(columns={"index": "time_stamp"})
 
 

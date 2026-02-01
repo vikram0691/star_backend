@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 import structlog
 
 from star_backend.logging_conf import configure_logging
-from star_backend.config import get_settings
+from star_backend.config import get_settings, ForecastConfig
 from star_backend.pipeline import process_forecast
 
 
@@ -45,6 +45,8 @@ async def forecast():
     No file upload required.
     """
     settings = get_settings()
+    config = ForecastConfig()
+
     
     # 1. Validation: Ensure files exist before running
     if not settings.clinical_file.exists():
@@ -57,7 +59,8 @@ async def forecast():
         result = process_forecast(
             clinical_path=settings.clinical_file, 
             weather_path=settings.weather_file, 
-            output_dir=settings.output_dir
+            output_dir=settings.output_dir,
+            config=config,
         )
         return result
 

@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Annotated, Optional
 
 from star_backend.logging_conf import configure_logging
-from star_backend.config import get_settings
+from star_backend.config import get_settings, ForecastConfig
 from star_backend.pipeline import process_forecast
 
 
@@ -23,20 +23,44 @@ def main(verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable ver
         
 @app.command()
 def run(
-    clinical_file: Annotated[Path, typer.Option(..., "--clinical-file", "-cf", help="Path to clinical data file", rich_help_panel="Input Data")],
-    weather_file: Annotated[Path, typer.Option(..., "--weather-file", "-wf", help="Path to weather data file", rich_help_panel="Input Data")],
-    output_dir: Annotated[Optional[Path], typer.Option("--output-dir", "-o", help="Output directory", rich_help_panel="Output")] = None,
+    clinical_file: Annotated[
+        Optional[Path], 
+        typer.Option(
+            "--clinical-file", "-cf", 
+            help="Path to the Excel file containing clinical case data (individual records)."
+        )
+    ] = None,
+    weather_file: Annotated[
+        Optional[Path], 
+        typer.Option(
+            "--weather-file", "-wf", 
+            help="Path to the weather data file containing daily temperature and rainfall measures."
+        )
+    ] = None,
+    output_dir: Annotated[
+        Optional[Path], 
+        typer.Option(
+            "--output-dir", "-o", 
+            help="Directory where the validated gold_dataset.csv and forecast results will be saved."
+        )
+    ] = None,
     ):
     """
     Main command that greets the user.
     """
     settings = get_settings()
+    config = ForecastConfig()
+
+
+    clinical_file = clinical_file or settings.clinical_file
+    weather_file = weather_file or settings.weather_file
+    output_dir = output_dir or settings.output_dir
 
     if output_dir is None:
         output_dir = settings.output_dir
 
     try:
-        result = process_forecast(clinical_file, weather_file, output_dir)
+        result = process_forecast(clinical_file, weather_file, output_dir, config)
         typer.secho("Forecast processing completed successfully!", fg=typer.colors.GREEN, bold = True)
     except Exception as e:
         logger.error(f"Error processing forecast:", error=str(e))
